@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - '3050:80'
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: './api'
+    environment:
+      - PORT = 3001
+      - DATABASE_URL = mongodb+srv://admin:AdminProyectos@gestionproyectosmisiont.1zmu5.mongodb.net/GestionProyectos?retryWrites=true&w=majority
+    ports:
+      - '3001:3001'
+    volumes:
+      - .:/usr/src
+      - /usr/src/node_modules
+
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./client
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/usr/src
+      - /usr/src/node_modules
